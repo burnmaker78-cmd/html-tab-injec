@@ -3,80 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dynamic Window Injector</title>
+  <title>New Tab</title>
   <style>
+    /* Animated Gradient Background */
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding: 20px;
-      background-color: #f9f9f9;
-      color: #333;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(-45deg, #0f172a, #1e1b4b, #311042, #020617);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      overflow: hidden;
     }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-    textarea {
+
+    /* Ambient Background Glows */
+    .glow-orb {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0,0,0,0) 70%);
+      border-radius: 50%;
+      z-index: 1;
+    }
+    .orb-1 { top: 10%; left: 15%; animation: float 8s ease-in-out infinite; }
+    .orb-2 { bottom: 10%; right: 15%; animation: float 12s ease-in-out infinite alternate; }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Glassmorphism Card Wrapper */
+    .glass-card {
+      position: relative;
+      z-index: 10;
+      width: 90%;
+      max-width: 480px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      color: #f8fafc;
+      text-align: center;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #a5b4fc, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    /* Custom File Upload Area */
+    .file-drop-zone {
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 30px 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.01);
+      margin-bottom: 20px;
+    }
+
+    .file-drop-zone:hover {
+      border-color: #818cf8;
+      background: rgba(129, 140, 248, 0.04);
+    }
+
+    .file-drop-zone input[type="file"] {
+      display: none;
+    }
+
+    .upload-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+
+    .file-info {
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    /* Action Buttons */
+    .btn-launch {
       width: 100%;
-      height: 150px;
-      box-sizing: border-box;
-      font-family: monospace;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      resize: vertical;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #007bff;
+      padding: 14px;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
       color: white;
       border: none;
-      border-radius: 4px;
-      font-size: 16px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    button:hover {
-      background-color: #0056b3;
+
+    .btn-launch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-launch:disabled {
+      background: #334155;
+      color: #64748b;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h3>HTML Window Injector</h3>
-  <label for="htmlInput">Paste your HTML content here:</label>
-  <textarea id="htmlInput" placeholder="<h1>Hello World</h1><p>This is dynamic content.</p>"></textarea>
-  <button onclick="injectToNewTab()">Open Content in Blank Tab</button>
-</div>
+  <!-- Ambient visual details -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
 
-<script>
-  function injectToNewTab() {
-    // 1. Get the content from the text area
-    const content = document.getElementById('htmlInput').value;
+  <div class="glass-card">
+    <h2>Tab Injector Pro</h2>
+    <p>Select a local HTML file to spawn inside a secure target window environment.</p>
 
-    if (!content.trim()) {
-      alert("Please enter some HTML code first!");
-      return;
+    <!-- Interactive Drop/Click Input Section -->
+    <div class="file-drop-zone" onclick="document.getElementById('htmlFileInput').click()">
+      <span class="upload-icon">📂</span>
+      <div class="file-info" id="fileStatus">Click to browse or drop HTML document</div>
+      <input type="file" id="htmlFileInput" accept=".html,.htm" onchange="handleFileSelect(event)">
+    </div>
+
+    <!-- Activation Button -->
+    <button class="btn-launch" id="launchBtn" onclick="launchWindow()" disabled>Launch Document</button>
+  </div>
+
+  <script>
+    let activeFileContent = "";
+
+    // Safely reads the uploaded user document
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        activeFileContent = e.target.result;
+        
+        // Dynamically update UI with file metadata
+        document.getElementById('fileStatus').innerText = `${file.name} (${Math.round(file.size / 1024)} KB)`;
+        document.getElementById('launchBtn').removeAttribute('disabled');
+      };
+      
+      reader.readAsText(file);
     }
 
-    // 2. Open a completely blank native browser tab
-    const newTab = window.open('about:blank', '_blank');
+    // Handles the execution phase inside about:blank
+    function launchWindow() {
+      if (!activeFileContent) return;
 
-    if (newTab) {
-      // 3. Open the document stream, write the custom HTML structure, and close it
-      newTab.document.open();
-      newTab.document.write(content);
-      newTab.document.close();
-    } else {
-      alert("Popup blocked! Please allow popups for this site to open the blank tab.");
+      // Open empty browsing context window
+      const destinationTab = window.open('about:blank', '_blank');
+
+      if (destinationTab) {
+        // Build document context streams
+        destinationTab.document.open();
+        destinationTab.document.write(activeFileContent);
+        destinationTab.document.close();
+      } else {
+        alert("Execution halted: Popup window blocked by configuration. Please grant permissions to open windows.");
+      }
     }
-  }
-</script>
-
+  </script>
 </body>
 </html>
